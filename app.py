@@ -304,7 +304,7 @@ with col_pix:
     st.session_state.pix_df = pix_df
 # ----    total_pix_fisico = float(sum(br_to_float(v) for v in pix_df["valor"].tolist())) if not pix_df.empty else 0.0
     valores_pix = pix_df["valor"] if ("valor" in pix_df.columns) else []
-total_pix_fisico = float(
+    total_pix_fisico = float(
     pd.Series(valores_pix)
       .fillna("0")
       .astype(str)
@@ -327,7 +327,7 @@ with col_sangria:
     st.session_state.sangria_df = sangria_df
 # ----    total_sangria = float(sum(br_to_float(v) for v in sangria_df["valor"].tolist())) if not sangria_df.empty else 0.0
     valores_sangria = sangria_df["valor"] if ("valor" in sangria_df.columns) else []
-total_sangria = float(
+    total_sangria = float(
     pd.Series(valores_sangria)
       .fillna("0")
       .astype(str)
@@ -350,7 +350,7 @@ with col_entrega:
     st.session_state.entrega_df = entrega_df
 # ----    total_entrega = float(sum(br_to_float(v) for v in entrega_df["valor"].tolist())) if not entrega_df.empty else 0.0
     valores_entrega = entrega_df["valor"] if ("valor" in entrega_df.columns) else []
-total_entrega = float(
+    total_entrega = float(
     pd.Series(valores_entrega)
       .fillna("0")
       .astype(str)
