@@ -293,71 +293,79 @@ with col_cartao:
 with col_pix:
     st.subheader("📲 Pix (físico)")
     st.caption("Use a grade para inserir múltiplos lançamentos.")
+
     if "pix_df" not in st.session_state:
-        st.session_state.pix_df = pd.DataFrame({"valor": ["0,00"]})
+        st.session_state["pix_df"] = pd.DataFrame({"valor": ["0,00"]})
+
     pix_df = st.data_editor(
-        st.session_state.pix_df,
+        st.session_state["pix_df"],
         num_rows="dynamic",
         use_container_width=True,
-        key="pix_editor",
+        key="pix_df",  # ✅ key igual ao estado
     )
-    st.session_state.pix_df = pix_df
-# ----    total_pix_fisico = float(sum(br_to_float(v) for v in pix_df["valor"].tolist())) if not pix_df.empty else 0.0
+
     valores_pix = pix_df["valor"] if ("valor" in pix_df.columns) else []
     total_pix_fisico = float(
-    pd.Series(valores_pix)
-      .fillna("0")
-      .astype(str)
-      .map(br_to_float)
-      .sum()
-)
+        pd.Series(valores_pix)
+          .fillna("0")
+          .astype(str)
+          .map(br_to_float)
+          .sum()
+    )
+
     st.metric("Total pix", f"R$ {formatar_brasileiro(total_pix_fisico)}")
 
 # ---- Sangria (dinâmico)
 with col_sangria:
     st.subheader("🏧 Sangria (físico)")
+
     if "sangria_df" not in st.session_state:
-        st.session_state.sangria_df = pd.DataFrame({"valor": ["0,00"]})
+        st.session_state["sangria_df"] = pd.DataFrame({"valor": ["0,00"]})
+
     sangria_df = st.data_editor(
-        st.session_state.sangria_df,
+        st.session_state["sangria_df"],
         num_rows="dynamic",
         use_container_width=True,
-        key="sangria_editor",
+        key="sangria_df",
     )
-    st.session_state.sangria_df = sangria_df
-# ----    total_sangria = float(sum(br_to_float(v) for v in sangria_df["valor"].tolist())) if not sangria_df.empty else 0.0
+
     valores_sangria = sangria_df["valor"] if ("valor" in sangria_df.columns) else []
     total_sangria = float(
-    pd.Series(valores_sangria)
-      .fillna("0")
-      .astype(str)
-      .map(br_to_float)
-      .sum()
-)
+        pd.Series(valores_sangria)
+          .fillna("0")
+          .astype(str)
+          .map(br_to_float)
+          .sum()
+    )
+
     st.metric("Total sangria", f"R$ {formatar_brasileiro(total_sangria)}")
+
 
 # ---- Entrega (dinâmico)
 with col_entrega:
     st.subheader("🛵 Entrega (físico)")
+
     if "entrega_df" not in st.session_state:
-        st.session_state.entrega_df = pd.DataFrame({"valor": ["0,00"]})
+        st.session_state["entrega_df"] = pd.DataFrame({"valor": ["0,00"]})
+
     entrega_df = st.data_editor(
-        st.session_state.entrega_df,
+        st.session_state["entrega_df"],
         num_rows="dynamic",
         use_container_width=True,
-        key="entrega_editor",
+        key="entrega_df",
     )
-    st.session_state.entrega_df = entrega_df
-# ----    total_entrega = float(sum(br_to_float(v) for v in entrega_df["valor"].tolist())) if not entrega_df.empty else 0.0
+
     valores_entrega = entrega_df["valor"] if ("valor" in entrega_df.columns) else []
     total_entrega = float(
-    pd.Series(valores_entrega)
-      .fillna("0")
-      .astype(str)
-      .map(br_to_float)
-      .sum()
-)
+        pd.Series(valores_entrega)
+          .fillna("0")
+          .astype(str)
+          .map(br_to_float)
+          .sum()
+    )
+
     st.metric("Total entrega", f"R$ {formatar_brasileiro(total_entrega)}")
+
 
 # ---- Sistema + Resumo + Salvar
 with col_sistema:
