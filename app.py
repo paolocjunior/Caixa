@@ -43,19 +43,47 @@ def formatar_brasileiro(valor: float) -> str:
 def br_to_float(texto) -> float:
     if texto is None:
         return 0.0
+
+    # Trata NaN
+    try:
+        import math
+        if isinstance(texto, float) and math.isnan(texto):
+            return 0.0
+    except Exception:
+        pass
+
     if isinstance(texto, (int, float)):
         try:
             return float(texto)
         except Exception:
             return 0.0
+
     t = str(texto).strip()
     if not t:
         return 0.0
-    try:
+
+    t = t.replace("R$", "").replace(" ", "").strip()
+
+    if "," in t and "." in t:
+        # Decide o separador decimal pelo último que aparece
+        if t.rfind(",") > t.rfind("."):
+            # 1.234,56 -> 1234.56
+            t = t.replace(".", "").replace(",", ".")
+        else:
+            # 1,234.56 -> 1234.56
+            t = t.replace(",", "")
+    elif "," in t:
+        # 1234,56 -> 1234.56  (remove possíveis pontos de milhar)
         t = t.replace(".", "").replace(",", ".")
+    else:
+        # 1234.56 -> 1234.56 (mantém)
+        pass
+
+    try:
         return float(t)
     except ValueError:
         return 0.0
+
 
 def validar_operadores_df(df: pd.DataFrame) -> tuple[bool, str, list[str]]:
     # Espera header "nome" como no seu arquivo original
@@ -274,7 +302,15 @@ with col_pix:
         key="pix_editor",
     )
     st.session_state.pix_df = pix_df
-    total_pix_fisico = float(sum(br_to_float(v) for v in pix_df["valor"].tolist())) if not pix_df.empty else 0.0
+# ----    total_pix_fisico = float(sum(br_to_float(v) for v in pix_df["valor"].tolist())) if not pix_df.empty else 0.0
+    valores_pix = pix_df["valor"] if ("valor" in pix_df.columns) else []
+total_pix_fisico = float(
+    pd.Series(valores_pix)
+      .fillna("0")
+      .astype(str)
+      .map(br_to_float)
+      .sum()
+)
     st.metric("Total pix", f"R$ {formatar_brasileiro(total_pix_fisico)}")
 
 # ---- Sangria (dinâmico)
@@ -289,7 +325,15 @@ with col_sangria:
         key="sangria_editor",
     )
     st.session_state.sangria_df = sangria_df
-    total_sangria = float(sum(br_to_float(v) for v in sangria_df["valor"].tolist())) if not sangria_df.empty else 0.0
+# ----    total_sangria = float(sum(br_to_float(v) for v in sangria_df["valor"].tolist())) if not sangria_df.empty else 0.0
+    valores_sangria = sangria_df["valor"] if ("valor" in sangria_df.columns) else []
+total_sangria = float(
+    pd.Series(valores_sangria)
+      .fillna("0")
+      .astype(str)
+      .map(br_to_float)
+      .sum()
+)
     st.metric("Total sangria", f"R$ {formatar_brasileiro(total_sangria)}")
 
 # ---- Entrega (dinâmico)
@@ -304,7 +348,15 @@ with col_entrega:
         key="entrega_editor",
     )
     st.session_state.entrega_df = entrega_df
-    total_entrega = float(sum(br_to_float(v) for v in entrega_df["valor"].tolist())) if not entrega_df.empty else 0.0
+# ----    total_entrega = float(sum(br_to_float(v) for v in entrega_df["valor"].tolist())) if not entrega_df.empty else 0.0
+    valores_entrega = entrega_df["valor"] if ("valor" in entrega_df.columns) else []
+total_entrega = float(
+    pd.Series(valores_entrega)
+      .fillna("0")
+      .astype(str)
+      .map(br_to_float)
+      .sum()
+)
     st.metric("Total entrega", f"R$ {formatar_brasileiro(total_entrega)}")
 
 # ---- Sistema + Resumo + Salvar
