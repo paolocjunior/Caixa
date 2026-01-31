@@ -294,15 +294,20 @@ with col_pix:
     st.subheader("📲 Pix (físico)")
     st.caption("Use a grade para inserir múltiplos lançamentos.")
 
+    # Estado do DataFrame (NÃO é a key do widget)
     if "pix_df" not in st.session_state:
         st.session_state["pix_df"] = pd.DataFrame({"valor": ["0,00"]})
 
+    # Key do widget separada (pix_editor)
     pix_df = st.data_editor(
         st.session_state["pix_df"],
         num_rows="dynamic",
         use_container_width=True,
-        key="pix_df",  # ✅ key igual ao estado
+        key="pix_editor",
     )
+
+    # Agora sim: persistir o DF retornado
+    st.session_state["pix_df"] = pix_df
 
     valores_pix = pix_df["valor"] if ("valor" in pix_df.columns) else []
     total_pix_fisico = float(
@@ -315,7 +320,7 @@ with col_pix:
 
     st.metric("Total pix", f"R$ {formatar_brasileiro(total_pix_fisico)}")
 
-# ---- Sangria (dinâmico)
+
 with col_sangria:
     st.subheader("🏧 Sangria (físico)")
 
@@ -326,8 +331,10 @@ with col_sangria:
         st.session_state["sangria_df"],
         num_rows="dynamic",
         use_container_width=True,
-        key="sangria_df",
+        key="sangria_editor",
     )
+
+    st.session_state["sangria_df"] = sangria_df
 
     valores_sangria = sangria_df["valor"] if ("valor" in sangria_df.columns) else []
     total_sangria = float(
@@ -341,7 +348,7 @@ with col_sangria:
     st.metric("Total sangria", f"R$ {formatar_brasileiro(total_sangria)}")
 
 
-# ---- Entrega (dinâmico)
+
 with col_entrega:
     st.subheader("🛵 Entrega (físico)")
 
@@ -352,8 +359,10 @@ with col_entrega:
         st.session_state["entrega_df"],
         num_rows="dynamic",
         use_container_width=True,
-        key="entrega_df",
+        key="entrega_editor",
     )
+
+    st.session_state["entrega_df"] = entrega_df
 
     valores_entrega = entrega_df["valor"] if ("valor" in entrega_df.columns) else []
     total_entrega = float(
@@ -365,6 +374,7 @@ with col_entrega:
     )
 
     st.metric("Total entrega", f"R$ {formatar_brasileiro(total_entrega)}")
+
 
 
 # ---- Sistema + Resumo + Salvar
